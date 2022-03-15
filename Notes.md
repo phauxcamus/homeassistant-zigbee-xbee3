@@ -21,10 +21,12 @@ Currently the Capability byte is always `0x04` for Receive On.  I don't know why
 
 Example Transmit Command:
 ```python
+byteNA16 = b'\x00\xF1'
+byteNA64 = b'\x2C\x0A\x94\x41\x00\xA2\x13\x00'
 xbee.transmit(
     dest    = xbee.ADDR_BROADCAST,
     cluster = b'\x00\x13',
-    payload = b'\xAA\x00\xF1\x2C\x0A\x94\x41\x00\xA2\x13\x00\x04'
+    payload = b'\xAA' + strNA16 + strNA64 + b'\x04'
 )
 ```
 # Snippets
