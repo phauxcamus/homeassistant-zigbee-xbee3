@@ -37,6 +37,16 @@ def log(level: int, data: str):
         print("[%s] [%s] %s" % (int(time.ticks_ms()/1000), strLevel, data))
     return
 
+def hwSleep(usec: int):
+    '''Wrapper for forcing the XBee to sleep.
+    
+    `usec`: Sleep time in µs
+    '''
+    log(3, 'Sleeping for %sµs' % (usec))
+    time.sleep_ms(500) # TODO: Replace below with actual hardware sleep command
+    # TODO: Trigger LED pin?
+    return 
+
 # Get our 64-bit Network Address and convert to Little Endian
 strNA64 = struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little'))
 log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little')), 'big'))[2:].upper()))
@@ -52,6 +62,6 @@ while xbee.atcmd('AI') > 0:
     255 - Initializing; no status has been determined yet
     '''
     log(3, 'Network not ready: %s' % (xbee.atcmd('AI')))
-    time.sleep_ms(500)
+        hwSleep(500)
 strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
 log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
