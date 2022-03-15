@@ -51,17 +51,18 @@ def hwSleep(usec: int):
 strNA64 = struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little'))
 log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little')), 'big'))[2:].upper()))
 
-# Hang out until we're connect, then get our 16-bit Network Address
-while xbee.atcmd('AI') > 0:
-    ''' TODO: Report status nicely (not just the raw value)
-    0   - Success
-    33  - Scan found no PANs
-    34  - Scan found no valid PANs based on SC and ID settings
-    35  - Valid PAN found, but joining is currently disabled
-    36  - No joinable beacons were found
-    255 - Initializing; no status has been determined yet
-    '''
-    log(3, 'Network not ready: %s' % (xbee.atcmd('AI')))
+# Main Loop
+while True:
+    while xbee.atcmd('AI') > 0: # Hang out until we're connected, then get our 16-bit Network Address
+        ''' TODO: Report status nicely (not just the raw value)
+        0   - Success
+        33  - Scan found no PANs
+        34  - Scan found no valid PANs based on SC and ID settings
+        35  - Valid PAN found, but joining is currently disabled
+        36  - No joinable beacons were found
+        255 - Initializing; no status has been determined yet
+        '''
+        log(3, 'Network not ready: %s' % (xbee.atcmd('AI')))
         hwSleep(500)
-strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
-log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
+    strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
+    log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
