@@ -29,6 +29,30 @@ xbee.transmit(
     payload = b'\xAA' + strNA16 + strNA64 + b'\x04'
 )
 ```
+
+## 0x8005 Active Endpoints Response
+This will be sent back when we get a 0x0005 Active Endpoints Request from the Coordinator (Interviewing has started).  You will need to get the Frame ID from the Request packet and respond with that.
+
+Bytes (Variable Length):
+|Name                      |Bytes   |Example                |
+|:-------------------------|:-------|:----------------------|
+|Frame ID                  |1       |From the Request packet|
+|Status                    |1       |OK (`0x00`)            |
+|16-bit Network Address    |2       |AT Command `MY`        |
+|Endpoint Count            |1       |                       |
+|List of Endpoint Addresses|Variable|                       |
+
+Example Transmit Command:
+```python
+byteNA16 = b'\x00\xF1'
+byteReqID = b'\xDE'
+listEndpoints = [b'\xAA', b'\x02', b'\x42']
+xbee.transmit(
+    dest = xbee.ADDR_BROADCAST,
+    cluster = b'\x80\x05',
+    payload = byteReqID + b'\x00' + byteNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
+)
+```
 # Snippets
 Packets received look like this (example below is of Cluster 0x0005 from the Coordinator):
 ```python
