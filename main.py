@@ -66,3 +66,24 @@ while True:
         hwSleep(500)
     strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
     log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
+
+    if xbee.receive() is not None: # Let's see if there's any data to act upon
+        # Buffer isn't empty, gather a packet
+        dictData = xbee.receive()
+
+        # Some setup
+        byteFrameID = dictData['payload'][:1]
+
+        # Use the Cluster ID to figure out what to do with this data
+        intClusterID = dictData['cluster']
+        if intClusterID == 5: # Active Endpoints Request
+            log(0, 'TODO: Implement: Active Endpoints Response')
+            log(3, 'Packet: %s' % (dictData))
+        elif intClusterID == 4: # Simple Descriptor Request
+            log(0, 'TODO: Implement: Simple Descriptor Response')
+            log(3, 'Packet: %s' % (dictData))
+        else: # Unknown Cluster ID
+            log(2, 'Recv Unknown Packet: %s' % (dictData))
+    else: # Sleep for a second then start over
+        log(3, 'No packets')
+        hwSleep(1000)
