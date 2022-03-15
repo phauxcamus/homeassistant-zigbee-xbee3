@@ -21,14 +21,20 @@ listEndpoints = {
     }
 }
 
-    if intLevel == 0: strLevel = 'ERR'
-    elif intLevel == 1: strLevel = 'WRN'
-    elif intLevel == 2: strLevel = 'IFO'
-    elif intLevel == 3: strLevel = 'VBS'
+def log(level: int, data: str):
+    '''Simple wrapper for logging to UART.
+ 
+    `level`: Verbose (3), Info (2), Warning (1), Error (0)
+    `data`: Literal string of log data to output
+    '''
+    if level == 0: strLevel = 'ERR'
+    elif level == 1: strLevel = 'WRN'
+    elif level == 2: strLevel = 'IFO'
+    elif level == 3: strLevel = 'VBS'
     else: strLevel = '???'
     
-    if intLevel <= intLogLevel:
-        print("[%s] [%s] %s" % (int(time.ticks_ms()/1000), strLevel, strLog))
+    if level <= intLogLevel:
+        print("[%s] [%s] %s" % (int(time.ticks_ms()/1000), strLevel, data))
     return
 
 # Get our 64-bit Network Address and convert to Little Endian
