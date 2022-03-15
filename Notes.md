@@ -53,6 +53,45 @@ xbee.transmit(
     payload = byteReqID + b'\x00' + byteNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
 )
 ```
+
+## 0x8004 Simple Descriptor Response
+Send this back when the Coordinator asks us to describe an Endpoint (one at a time).
+
+Bytes (Variable Length):
+Name                                 |Bytes   |Example                                                     |
+|:-----------------------------------|:-------|:-----------------------------------------------------------|
+|Frame ID                            |1       |From the Request packet                                     |
+|Status                              |1       |OK (`0x00`)                                                 |
+|16-bit Network Address              |2       |AT Command `MY`                                             |
+|Sum of bytes following this one     |1       |                                                            |
+|Endpoint ID                         |1       |From the Request packet                                     |
+|Endpoint Profile                    |2       |Home Automation (`0x0401`)                                  |
+|Endpoint Type                       |2       |Binary (`0x0200`)                                           |
+|Version Number                      |1       |`0x30`                                                      |
+|Sum of Cluster Types Accepted       |1       |                                                            |
+|List of Cluster Types Accepted      |Variable|`0x0000` for Basic, `0x0300` for ID, and `0x0600` for On/Off|
+|Sum of Cluster Types Transmitted    |1       |                                                            |
+|List of Cluster Types Transmitted   |Variable|                                                            |
+
+Both Lists can be skipped if there's none (Sum is 0)
+
+I'm not sure what other Endpoint Types are available, and what Clusters Types can be accepted or transmitted, but it's worth looking into soon.
+
+Example Transmit Command:
+```python
+byteNA16 = b'\x00\xF1'
+byteReqID = b'\xDE'
+byteEndpointID = b'\xAA'
+listClustersRX = [b'\x00\x00', b'\x03\x00', b'\x06\x00']
+listClustersTX = []
+bytesData = byteEndpointID + b'\x04\x01\x02\x00\x30' + len(listClustersRX).to_bytes(1, 'big') + b''.join(listClustersRX) + len(listClustersTX).to_bytes(1, 'big') + b''.join(listClustersTX)
+xbee.transmit(
+    dest    = xbee.ADDR_BROADCAST,
+    cluster = b'\x80\x05',
+    payload = byteReqID + b'\x00' + byteNA16 + len(bytesData).to_bytes(1, 'big') + bytesData
+)
+```
+
 # Snippets
 Packets received look like this (example below is of Cluster 0x0005 from the Coordinator):
 ```python
