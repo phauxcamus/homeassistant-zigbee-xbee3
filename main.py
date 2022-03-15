@@ -6,7 +6,21 @@ import struct
 # Console Logging (3 Verbose, 2 Info, 1 Warning, 0 Error, -1 Off)
 intLogLevel = 2
 
-def log(intLevel, strLog):
+# Endpoint Definition
+listEndpoints = {
+    b'\x01': { # TODO: Auto increment addresses, or statically define them?
+        'type': b'\x02\x00',
+        'clustersRX': [
+            b'\x00\x00',
+            b'\x03\x00',
+            b'\x06\x00'
+        ],
+        'clustersTX': [
+            # None
+        ]
+    }
+}
+
     if intLevel == 0: strLevel = 'ERR'
     elif intLevel == 1: strLevel = 'WRN'
     elif intLevel == 2: strLevel = 'IFO'
