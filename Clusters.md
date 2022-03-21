@@ -70,6 +70,17 @@ Unknown!
 b'\xc4\x00\x13\xa2\x00A\x94\n, Test Node\x00\xff\xfe\x01\x01\xc1\x05\x10\x1e\x00\x12\x00\x00.'
 ```
 
+# 0x8000 Network Address Response
+In response to a `0x0000` Network Address Request
+
+## Bytes (12):
+|Name                  |Bytes|Example               |
+|:---------------------|:----|:---------------------|
+|Frame ID              |1    |*Arbitrary*           |
+|Status                |1    |OK (`0x00`)           |
+|64-bit Network Address|8    |AT Command `SH` + `SL`|
+|16-bit Network Address|2    |AT Command `MY`       |
+
 # 0x8004 Simple Descriptor Response
 Send this back when the Coordinator asks us to describe an Endpoint (one at a time).
 
