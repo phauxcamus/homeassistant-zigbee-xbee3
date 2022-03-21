@@ -14,4 +14,4 @@ As of firmware 100D, these are the settings used (all others are default):
 |AO|API Output Mode|7 *(ZDO Passthrough)*|
 |BD|UART Baud Rate|7 *(115200)*|
 |P0|DIO10/PWM0 Configuration|2 *(PWM Output)*|
-|P1|DIO11/PWM1 Configuration|2 *(PWM Output)*|
+|P1|DIO11 Configuration|2 *(PWM Output)*|
