@@ -1,5 +1,5 @@
 # 0x0013 Device Announce
-## Bytes (12 total):
+## Bytes (12):
 |Name                  |Bytes|Example               |
 |:---------------------|:----|:---------------------|
 |Frame ID              |1    |*Arbitrary*           |
@@ -12,7 +12,7 @@ Currently the Capability byte is always `0x04` for Receive On.
 # 0x0092 XBee I/O Sample
 Sent out automatically based on the `IR` polling rate.  The Destination address is defined by `DH` and `DL`.
 
-## Bytes (Variable Length):
+## Bytes (Variable):
 |Name            |Bytes   |Example                                    |
 |:---------------|:-------|:------------------------------------------|
 |Sample Set      |1       |Number of samples (always `0x01`)          |
@@ -42,7 +42,7 @@ In the sample below, a PIR sensor's output was attached to DIO4 and powered via 
 # 0x8004 Simple Descriptor Response
 Send this back when the Coordinator asks us to describe an Endpoint (one at a time).
 
-## Bytes (Variable Length):
+## Bytes (Variable):
 Name                                 |Bytes   |Example                                                     |
 |:-----------------------------------|:-------|:-----------------------------------------------------------|
 |Frame ID                            |1       |From the Request packet                                     |
@@ -61,9 +61,9 @@ Name                                 |Bytes   |Example                          
 Both Lists can be skipped if there's none (Sum is 0)
 
 # 0x8005 Active Endpoints Response
-This will be sent back when we get a 0x0005 Active Endpoints Request from the Coordinator (Interviewing has started).  You will need to get the Frame ID from the Request packet and respond with that.
+This will be sent back when we get a `0x0005` Active Endpoints Request from the Coordinator (Interviewing has started).  You will need to get the Frame ID from the Request packet and respond with that.
 
-## Bytes (Variable Length):
+## Bytes (Variable):
 |Name                      |Bytes   |Example                |
 |:-------------------------|:-------|:----------------------|
 |Frame ID                  |1       |From the Request packet|
