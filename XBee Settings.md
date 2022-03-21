@@ -6,9 +6,12 @@ As of firmware 100D, these are the settings used (all others are default):
 |AP       |API Enable                        |`0x04` *(MicroPython REPL)*                                                 |
 |BD       |UART Baud Rate                    |`0x07` *(115200)*                                                           |
 |D5       |DIO5/Association LED Configuration|`0x00` *(Disabled)*                                                         |
+|DH       |Destination Address High          |*Set to the value of `SH` to loop back the Sample data enabled by `IR`*     |
+|DL       |Destination Address Low           |*Set to the value of `SL` to loop back the Sample data enabled by `IR`*     |
 |EE       |Encryption Enable                 |`0x01` *(Enabled)*                                                          |
 |EO       |Encryption Options                |`0x01` *(Transmit NWK Keys in the clear)*                                   |
 |ID       |Extended PAN ID                   |*Your ZigBee network's PAN ID*                                              |
+|IR       |IO Sampling Rate                  |*Time in milliseconds*                                                      |
 |JN       |Join Notification                 |`0x01` *(Enabled)*                                                          |
 |NI       |Node Identifier                   |*Any Description*                                                           |
 |NO       |Node Discovery Options            |`0x03`                                                                      |
