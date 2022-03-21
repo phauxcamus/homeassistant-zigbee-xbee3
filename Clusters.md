@@ -1,3 +1,26 @@
+# 0x0005 Active Endpoints Request
+This packet is sent by the Coordinator after we have sent a `0x0013` Device Announce broadcast.  A [`0x8005` Active Endpoints Response](#0x8005-active-endpoints-response) is broadcasted back.
+
+## Bytes (3):
+|Name                      |Bytes|Example        |
+|:-------------------------|:----|:--------------|
+|Frame ID                  |1    |*Arbitrary*    |
+|Our 16-bit Network Address|2    |AT Command `MY`|
+
+## Sample
+```python
+{
+    'profile': 0,
+    'dest_ep': 0,
+    'broadcast': False,
+    'sender_nwk': 0,
+    'source_ep': 0,
+    'payload': b'#\xc4_',
+    'sender_eui64': b'\x00\ro\x00\x12M\r@',
+    'cluster': 5
+}
+```
+
 # 0x0013 Device Announce
 ## Bytes (12):
 |Name                  |Bytes|Example               |
