@@ -11,7 +11,7 @@ As of firmware 100D, these are the settings used (all others are default):
 |EE       |Encryption Enable                 |`0x01` *(Enabled)*                                                          |
 |EO       |Encryption Options                |`0x01` *(Transmit NWK Keys in the clear)*                                   |
 |ID       |Extended PAN ID                   |*Your ZigBee network's PAN ID*                                              |
-|IR       |IO Sampling Rate                  |*Time in milliseconds*                                                      |
+|IC       |Digital IO Change Detection       |*Bit mask of which pins to monitor for changes*                             |
 |JN       |Join Notification                 |`0x01` *(Enabled)*                                                          |
 |NI       |Node Identifier                   |*Any Description*                                                           |
 |NO       |Node Discovery Options            |`0x03`                                                                      |
