@@ -43,8 +43,7 @@ def hwSleep(usec: int):
     `usec`: Sleep time in µs
     '''
     log(3, 'Sleeping for %sµs' % (usec))
-    time.sleep_ms(500) # TODO: Replace below with actual hardware sleep command
-    # TODO: Trigger LED pin?
+    time.sleep_ms(usec) # TODO: Replace below with actual hardware sleep command
     return 
 
 # Get our 64-bit Network Address and convert to Little Endian
