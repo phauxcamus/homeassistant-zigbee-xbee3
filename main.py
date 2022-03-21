@@ -46,6 +46,21 @@ def hwSleep(usec: int):
     time.sleep_ms(usec) # TODO: Replace below with actual hardware sleep command
     return 
 
+def formatHex(data: bytes or int, length: int = None):
+    '''Make prettier hex output
+    
+    `data`: Bytes or Int input
+    `length`: Pad to length
+    '''
+    # TODO: Implement padding
+    if type(data) is bytes:
+        output = []
+        for i in struct.unpack('%sB' % (len(data)), data):
+            output.append(hex(i)[2:].upper())
+        return(''.join(output))
+    elif type(data) is int:
+        return(hex(data)[2:].upper())
+
 # Get our 64-bit Network Address and convert to Little Endian
 strNA64 = struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little'))
 log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little')), 'big'))[2:].upper()))
