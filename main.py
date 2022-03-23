@@ -96,7 +96,7 @@ while True:
     strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
     log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
 
-    # Device Announce
+    # TODO: Device Announce
 
     if xbee.receive() is not None: # Let's see if there's any data to act upon
         # Buffer isn't empty, gather a packet
