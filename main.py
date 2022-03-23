@@ -98,10 +98,8 @@ while True:
 
     # TODO: Device Announce
 
-    if xbee.receive() is not None: # Let's see if there's any data to act upon
-        # Buffer isn't empty, gather a packet
-        dictData = xbee.receive()
-
+    dictData = xbee.receive()
+    if dictData is not None: # Let's see if there's any data to act upon
         # Some setup
         byteFrameID = dictData['payload'][:1]
 
