@@ -46,6 +46,21 @@ def hwSleep(usec: int):
     time.sleep_ms(usec) # TODO: Replace below with actual hardware sleep command
     return 
 
+def setPWM(brightness: int, pwm1: bool = False):
+    '''Set the PWM pin states by percentage
+    
+    `brightness`: Integer from 0 to 100
+    `pwm1`: Set to True for PWM1, otherwise you're addressing PWM0
+    '''
+    try:
+        xbee.atcmd('M'+int(pwm1), hex(int(brightness/100)*1023))
+    except Exception as e:
+        log(1, 'Failed to set PWM%s to %s%% (%s): %s' % (int(pwm1), brightness, hex(int(brightness/100)*1023).upper(), e))
+        return False
+    finally:
+        log(2, 'PWM%s set to %S%% (%s)' % (int(pwm1), brightness, hex(int(brightness/100)*1023).upper()))
+        return
+
 def formatHex(data: bytes or int, length: int = None):
     '''Make prettier hex output
     
