@@ -24,6 +24,6 @@ while True:
 
             # Bonus: Toggle PWM0 if DIO4 is high
             if pinstatus == 128:
-                xbee.atcmd('M0', 0x00)
+                xbee.atcmd('M0', 0x000)
             elif pinstatus == 144:
-                xbee.atcmd('M0', 0xFF)
+                xbee.atcmd('M0', 0x3FF)
