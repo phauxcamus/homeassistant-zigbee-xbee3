@@ -117,13 +117,12 @@ while True:
         # Use the Cluster ID to figure out what to do with this data
         intClusterID = dictData['cluster']
         if intClusterID == 5: # Active Endpoints Request
-            log(0, 'TODO: Implement: Active Endpoints Response')
-            log(3, 'Packet: %s' % (dictData))
+            log(2, 'Active Endpoint Request from %s' % (formatHex(dictData['sender_eui64'])))
         elif intClusterID == 4: # Simple Descriptor Request
-            log(0, 'TODO: Implement: Simple Descriptor Response')
-            log(3, 'Packet: %s' % (dictData))
+            log(2, 'Simple Descriptor Request from %s' % (formatHex(dictData['sender_eui64'])))
+            
         else: # Unknown Cluster ID
-            log(2, 'Recv Unknown Packet: %s' % (dictData))
+            log(1, 'Unknown Packet: %s' % (dictData))
     else: # Sleep for a second then start over
         log(3, 'No packets')
         hwSleep(1000)
