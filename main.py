@@ -82,17 +82,22 @@ log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i
 
 # Main Loop
 while True:
-    while xbee.atcmd('AI') > 0: # Hang out until we're connected, then get our 16-bit Network Address
-        ''' TODO: Report status nicely (not just the raw value)
-        0   - Success
-        33  - Scan found no PANs
-        34  - Scan found no valid PANs based on SC and ID settings
-        35  - Valid PAN found, but joining is currently disabled
-        36  - No joinable beacons were found
-        255 - Initializing; no status has been determined yet
-        '''
-        log(3, 'Network not ready: %s' % (xbee.atcmd('AI')))
-        hwSleep(500)
+    # Hang out until we're connected, then get our 16-bit Network Address
+    intAIStatus = xbee.atcmd('AI')
+    while intAIStatus > 0:
+        if intAIStatus == 33:
+            log(1, 'Network scan complete but no PANs were found')
+        elif intAIStatus == 34:
+            log(1, 'Network scan complete but our PAN ID wasn\'t found (check SC and ID settings)')
+        elif intAIStatus == 35:
+            log(1, 'PAN was found but is not in join mode')
+        elif intAIStatus == 36:
+            log(1, 'No joinable PANs were found')
+        elif intAIStatus == 255:
+            log(2, 'Network is intializing')
+        else:
+            log(0, 'Network is in an unknown state (%s)' % (intAIStatus))
+        hwSleep(1000)
     strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
     log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
 
