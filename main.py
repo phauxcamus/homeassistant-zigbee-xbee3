@@ -118,6 +118,12 @@ while True:
         intClusterID = dictData['cluster']
         if intClusterID == 5: # Active Endpoints Request
             log(2, 'Active Endpoint Request from %s' % (formatHex(dictData['sender_eui64'])))
+            listEndpoints = [b'\xAA', b'\x02', b'\x42']
+            xbee.transmit(
+                dest = xbee.ADDR_BROADCAST,
+                cluster = b'\x80\x05',
+                payload = byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
+            )
         elif intClusterID == 4: # Simple Descriptor Request
             log(2, 'Simple Descriptor Request from %s' % (formatHex(dictData['sender_eui64'])))
             
