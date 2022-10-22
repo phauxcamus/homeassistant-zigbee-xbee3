@@ -8,8 +8,11 @@ def formatHex(data: bytes or int):
     if type(data) is bytes:
         output = []
         for i in struct.unpack('%sB' % (len(data)), data):
-            output.append(hex(i)[2:].upper())
-        return(''.join(output))
+            if len(hex(i)[2:]) == 1: # Padding
+                output.append('0' + hex(i)[2:].upper())
+            else:
+                output.append(hex(i)[2:].upper())
+        return(' '.join(output))
     elif type(data) is int:
         return(hex(data)[2:].upper())
 

@@ -61,18 +61,19 @@ def setPWM(brightness: int, pwm1: bool = False):
         log(2, 'PWM%s set to %S%% (%s)' % (int(pwm1), brightness, hex(int(brightness/100)*1023).upper()))
         return
 
-def formatHex(data: bytes or int, length: int = None):
+def formatHex(data: bytes or int):
     '''Make prettier hex output
     
     `data`: Bytes or Int input
-    `length`: Pad to length
     '''
-    # TODO: Implement padding
     if type(data) is bytes:
         output = []
         for i in struct.unpack('%sB' % (len(data)), data):
-            output.append(hex(i)[2:].upper())
-        return(''.join(output))
+            if len(hex(i)[2:]) == 1: # Padding
+                output.append('0' + hex(i)[2:].upper())
+            else:
+                output.append(hex(i)[2:].upper())
+        return(' '.join(output))
     elif type(data) is int:
         return(hex(data)[2:].upper())
 
