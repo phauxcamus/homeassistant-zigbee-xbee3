@@ -65,14 +65,6 @@ In the sample below, a PIR sensor's output was attached to DIO4 and powered via 
 }
 ```
 
-# 0x0095
-Unknown!
-
-## Sample
-```python
-b'\xc4\x00\x13\xa2\x00A\x94\n, Test Node\x00\xff\xfe\x01\x01\xc1\x05\x10\x1e\x00\x12\x00\x00.'
-```
-
 # 0x8000 Network Address Response
 In response to a `0x0000` Network Address Request
 
