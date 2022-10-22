@@ -16,17 +16,23 @@ def formatHex(data: bytes or int):
     elif type(data) is int:
         return(hex(data)[2:].upper())
 
+bytesPayloadOld = b''
 while True:
     data = xbee.receive()
     if data is not None:
+        bytesPayload = data['payload']
         if data['cluster'] == int(0x92): # Data from ourself
-            pinstatus = int.from_bytes(data['payload'][4:6], 'big') # Pick out the relavant bytes
+            if bytesPayload == bytesPayloadOld:
+                print('[%s] Same Data' % (int(time.ticks_ms()/1000)))
+                continue
+            print('[%s] IO Data:' % (int(time.ticks_ms()/1000)))
+            print('    Raw Data: %s' % (formatHex(bytesPayload)))
+            print('    DIO Monitored: %s' % (formatHex(bytesPayload[1:3])))
+            print('    DIO State: %s / %s' % (formatHex(bytesPayload[4:6]), int.from_bytes(bytesPayload[4:6], 'big')))
+            print('    AIO Monitored: %s' % (formatHex(bytesPayload[3])))
+            print('    AIO State: %s' % (formatHex(bytesPayload[6:])))
 
-            # print('DIO Change: %s' % (''.join(list(('0'*(8-len(bin(int.from_bytes(pinstatus, 'big'))[2:])), bin(int.from_bytes(pinstatus, 'big'))[2:]))))) # Output new state
-            print('DIO Change: %s' % (formatHex(pinstatus)))
 
-            # Bonus: Toggle PWM0 if DIO4 is high
-            if pinstatus == 128:
-                xbee.atcmd('M0', 0x000)
-            elif pinstatus == 144:
-                xbee.atcmd('M0', 0x3FF)
+
+            # Save our new data for later comparison
+            bytesPayloadOld = bytesPayload
