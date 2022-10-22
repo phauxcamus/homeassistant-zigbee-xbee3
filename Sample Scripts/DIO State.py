@@ -17,11 +17,23 @@ def formatHex(data: bytes or int):
         return(hex(data)[2:].upper())
 
 bytesPayloadOld = b''
+intLastMotion = 0
 while True:
     data = xbee.receive()
     if data is not None:
         bytesPayload = data['payload']
         if data['cluster'] == int(0x92): # Data from ourself
+
+            # Bonus: Toggle PWM0 if DIO0 is high
+            if int.from_bytes(bytesPayload[4:6], 'big') == 1:
+                xbee.atcmd('M0', 0x00F)
+                intLastMotion = int(time.ticks_ms()/1000)
+                print('[%s] Light ON' % (int(time.ticks_ms()/1000)))
+            elif int.from_bytes(bytesPayload[4:6], 'big') == 0:
+                if (int(time.ticks_ms()/1000) - intLastMotion) > 5:
+                    print('[%s] Light OFF (%s)' % (int(time.ticks_ms()/1000), intLastMotion))
+                    xbee.atcmd('M0', 0x001)
+
             if bytesPayload == bytesPayloadOld:
                 print('[%s] Same Data' % (int(time.ticks_ms()/1000)))
                 continue
