@@ -1,3 +1,6 @@
+# Intro
+This page serves as more friendly documentation on the various clusters.  Both the XBee PDF and the ZigBee Alliance have *many* more clusters in the spec, these are just what's been observed.
+
 # 0x0005 Active Endpoints Request
 This packet is sent by the Coordinator after we have sent a `0x0013` Device Announce broadcast.  A [`0x8005` Active Endpoints Response](#0x8005-active-endpoints-response) is broadcasted back.
 
