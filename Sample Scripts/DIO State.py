@@ -43,8 +43,6 @@ while True:
             print('    DIO State: %s / %s' % (formatHex(bytesPayload[4:6]), int.from_bytes(bytesPayload[4:6], 'big')))
             print('    AIO Monitored: %s' % (formatHex(bytesPayload[3])))
             print('    AIO State: %s' % (formatHex(bytesPayload[6:])))
-
-
-
+            
             # Save our new data for later comparison
             bytesPayloadOld = bytesPayload
