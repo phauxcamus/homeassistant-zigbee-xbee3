@@ -33,7 +33,7 @@ This packet is sent by the Coordinator after we have sent a `0x0013` Device Anno
 Currently the Capability byte is always `0x04` for Receive On.
 
 # 0x0092 XBee I/O Sample
-Sent out automatically based on the `IR` polling rate or if `IC` is non-zero.  The Destination address is defined by `DH` and `DL`.
+Sent out automatically based on the `IR` polling rate or if `IC` is non-zero.  The Destination address is defined by `DH` and `DL`.  Any IO pins that aren't set to Disabled will be selected automatically (including outputs)
 
 ## Bytes (Variable):
 |Name            |Bytes   |Example                                    |
