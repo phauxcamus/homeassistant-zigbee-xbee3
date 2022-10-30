@@ -106,11 +106,11 @@ log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
 while True:
     # Do a Device Announce so everyone knows we're here
     # TODO: Is this nessesary if JN is enabled?
-    xbee.transmit(
+    '''xbee.transmit(
         xbee.ADDR_BROADCAST,
         b'\xAA' + strNA16 + strNA64 + b'\x04',
         cluster = 19
-    )
+    )'''
 
     dictData = xbee.receive()
     if dictData is not None: # Let's see if there's any data to act upon
