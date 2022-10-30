@@ -170,6 +170,9 @@ def funcRX(data: dict):
     if data['sender_nwk'] == int.from_bytes(strNA16, 'little'):
         return'''
 
+    # TODO: This needs to be defined better (Global var?)
+    strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
+
     # Use the Cluster ID to figure out what to do with this data
     intClusterID = data['cluster']
     if intClusterID == 5: # 0x0005 Active Endpoints Request
