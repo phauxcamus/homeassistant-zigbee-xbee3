@@ -77,9 +77,10 @@ def formatHex(data: bytes or int):
     elif type(data) is int:
         return(hex(data)[2:].upper())
 
-def txData(clusterint: int, payload: bytes, addr = xbee.ADDR_BROADCAST):
+def txData(clusterint: int, payload: bytes, profileint: int, addr = xbee.ADDR_BROADCAST):
     '''Wrapper for xbee.transmit()
 
+    `profileint`: Profile ID
     `clusterint`: Cluster ID
     `payload`: Bytestring of data to send
     `addr`: Target address (Default is Broadcast)
@@ -90,9 +91,13 @@ def txData(clusterint: int, payload: bytes, addr = xbee.ADDR_BROADCAST):
             xbee.transmit(
                 addr,
                 payload,
-                cluster=clusterint
+                cluster=clusterint,
+                profile=profileint,
+                # TODO: Are these always the same? ... I don't think so!
+                source_ep=0,
+                dest_ep=0
             )
-            log(3, 'Sent %s: %s' % (clusterint, formatHex(payload)))
+            log(2, 'Sent Profile %s, Cluster %s: %s' % (profileint, clusterint, formatHex(payload)))
             return False
         except OSError as e:
             if retries == 5:
