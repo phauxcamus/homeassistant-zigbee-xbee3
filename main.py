@@ -191,11 +191,12 @@ def funcRX(data: dict):
             [0xf833:0] Discovering endpoint information
         '''
     elif intClusterID == 146: # 0x0092 I/O Sample Indicator
-        return # TODO: Report to HA or something?
+        log(3, 'I/O Sample Indicator: %s' % (formatHex(data['payload'])))
     elif intClusterID == 32768: # 0x8000 Network Address Response
-        log(3, 'Network Address Response from %s: %s' % (formatHex(data['sender_eui64']), formatHex(data['payload'])))
+        log(3, 'Network Address Response from %s: %s' % (formatHex(data['sender_eui64']), formatHex(data['sender_nwk'])))
     elif intClusterID == 32769: # 0x8001 IEEE Address Response
-        log(3, 'IEEE Address Response from %s: %s' % (formatHex(data['sender_eui64']), formatHex(data['payload'])))
+        # TODO: sender_nwk is 0
+        log(0, 'IEEE Address Response from %s: %s' % (formatHex(data['sender_nwk']), formatHex(data['sender_eui64'])))
     else: # Unknown Cluster ID
         log(1, 'Unknown Packet: %s' % (data))
 
