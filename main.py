@@ -107,9 +107,9 @@ while True:
     # Do a Device Announce so everyone knows we're here
     # TODO: Is this nessesary if JN is enabled?
     xbee.transmit(
-        dest = xbee.ADDR_BROADCAST,
-        cluster = b'\x00\x13',
-        payload = b'\xAA' + strNA16 + strNA64 + b'\x04'
+        xbee.ADDR_BROADCAST,
+        b'\xAA' + strNA16 + strNA64 + b'\x04',
+        cluster = 19
     )
 
     dictData = xbee.receive()
@@ -123,9 +123,9 @@ while True:
             log(2, 'Active Endpoint Request from %s' % (formatHex(dictData['sender_eui64'])))
             listEndpoints = [b'\xAA', b'\x02', b'\x42']
             xbee.transmit(
-                dest = xbee.ADDR_BROADCAST,
-                cluster = b'\x80\x05',
-                payload = byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
+                xbee.ADDR_BROADCAST,
+                byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints),
+                cluster = b'\x80\x05'
             )
         elif intClusterID == 4: # Simple Descriptor Request
             log(2, 'Simple Descriptor Request from %s' % (formatHex(dictData['sender_eui64'])))
