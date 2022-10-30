@@ -81,27 +81,29 @@ def formatHex(data: bytes or int):
 strNA64 = struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little'))
 log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little')), 'big'))[2:].upper()))
 
+# Hang out until we're connected, then 
+intAIStatus = xbee.atcmd('AI')
+while intAIStatus > 0:
+    if intAIStatus == 33:
+        log(1, 'Network scan complete but no PANs were found')
+    elif intAIStatus == 34:
+        log(1, 'Network scan complete but our PAN ID wasn\'t found (check SC and ID settings)')
+    elif intAIStatus == 35:
+        log(1, 'PAN was found but is not in join mode')
+    elif intAIStatus == 36:
+        log(1, 'No joinable PANs were found')
+    elif intAIStatus == 255:
+        log(2, 'Network is intializing')
+    else:
+        log(0, 'Network is in an unknown state (%s)' % (intAIStatus))
+    hwSleep(1000)
+
+# Now that we're connected, get our 16-bit Network Address
+strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
+log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
+
 # Main Loop
 while True:
-    # Hang out until we're connected, then get our 16-bit Network Address
-    intAIStatus = xbee.atcmd('AI')
-    while intAIStatus > 0:
-        if intAIStatus == 33:
-            log(1, 'Network scan complete but no PANs were found')
-        elif intAIStatus == 34:
-            log(1, 'Network scan complete but our PAN ID wasn\'t found (check SC and ID settings)')
-        elif intAIStatus == 35:
-            log(1, 'PAN was found but is not in join mode')
-        elif intAIStatus == 36:
-            log(1, 'No joinable PANs were found')
-        elif intAIStatus == 255:
-            log(2, 'Network is intializing')
-        else:
-            log(0, 'Network is in an unknown state (%s)' % (intAIStatus))
-        hwSleep(1000)
-    strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
-    log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
-
     # Do a Device Announce so everyone knows we're here
     # TODO: Is this nessesary if JN is enabled?
     xbee.transmit(
