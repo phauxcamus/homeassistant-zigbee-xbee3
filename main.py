@@ -184,7 +184,12 @@ def funcRX(data: dict):
             payload = byteFrameID + b'\x00' + strNA16 + b'\x01\x00\xdd' # + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
         )
     elif intClusterID == 4: # 0x0004 Simple Descriptor Request
-        log(2, 'Simple Descriptor Request from %s' % (formatHex(data['sender_eui64'])))
+        log(2, 'Simple Descriptor Request from %s: %s' % (formatHex(data['sender_eui64']), data))
+        ''' From HA:
+            [0xf833] Already have endpoints: {0: <Endpoint id=0 in=[] out=[] status=<Status.NEW: 0>>}
+            [0xf833] Initializing endpoints [<Endpoint id=0 in=[] out=[] status=<Status.NEW: 0>>]
+            [0xf833:0] Discovering endpoint information
+        '''
     elif intClusterID == 146: # 0x0092 I/O Sample Indicator
         return # TODO: Report to HA or something?
     elif intClusterID == 32768: # 0x8000 Network Address Response
