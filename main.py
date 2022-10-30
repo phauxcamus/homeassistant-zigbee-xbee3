@@ -176,13 +176,13 @@ def funcRX(data: dict):
     # Use the Cluster ID to figure out what to do with this data
     intClusterID = data['cluster']
     if intClusterID == 5: # 0x0005 Active Endpoints Request
-        log(2, 'Active Endpoint Request from %s' % (formatHex(data['sender_eui64'])))
+        log(2, 'Active Endpoint Request from %s, Frame ID %s' % (formatHex(data['sender_eui64']), data))
         listEndpoints = [b'\xAA', b'\x02', b'\x42']
         txData(
+            addr = data['sender_eui64'],
             clusterint = 32773,
-            payload = byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
+            payload = byteFrameID + b'\x00' + strNA16 + b'\x01\x00\xdd' # + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
         )
-
     elif intClusterID == 4: # 0x0004 Simple Descriptor Request
         log(2, 'Simple Descriptor Request from %s' % (formatHex(data['sender_eui64'])))
     elif intClusterID == 146: # 0x0092 I/O Sample Indicator
