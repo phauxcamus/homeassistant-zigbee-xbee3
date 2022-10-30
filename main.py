@@ -95,7 +95,7 @@ while intAIStatus > 0:
     elif intAIStatus == 255:
         log(2, 'Network is intializing')
     else:
-        log(0, 'Network is in an unknown state (%s)' % (intAIStatus))
+        log(0, 'Network is in an unknown state (%s), see ZigBee User Guide page 220' % (hex(intAIStatus)))
     hwSleep(1000)
 
 # Now that we're connected, get our 16-bit Network Address
