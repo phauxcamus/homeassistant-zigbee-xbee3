@@ -77,6 +77,32 @@ def formatHex(data: bytes or int):
     elif type(data) is int:
         return(hex(data)[2:].upper())
 
+def txData(clusterint: int, payload: bytes, addr = xbee.ADDR_BROADCAST):
+    '''Wrapper for xbee.transmit()
+
+    `clusterint`: Cluster ID
+    `payload`: Bytestring of data to send
+    `addr`: Target address (Default is Broadcast)
+    '''
+    retries = 0
+    while True:
+        try:
+            xbee.transmit(
+                addr,
+                payload,
+                cluster=clusterint
+            )
+            log(3, 'Sent %s: %s' % (clusterint, formatHex(payload)))
+            return False
+        except OSError as e:
+            if retries == 5:
+                # log(0, 'Error sending %s: %s' % (clusterint, formatHex(payload)))
+                return True
+            # log(1, 'Failed to send %s x%s: %s' % (clusterint, retries, formatHex(payload)))
+            retries = retries + 1
+            hwSleep(500)
+            continue
+
 # Get our 64-bit Network Address and convert to Little Endian
 strNA64 = struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little'))
 log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little')), 'big'))[2:].upper()))
@@ -144,20 +170,11 @@ def funcRX(data: dict):
     if intClusterID == 5: # 0x0005 Active Endpoints Request
         log(2, 'Active Endpoint Request from %s' % (formatHex(data['sender_eui64'])))
         listEndpoints = [b'\xAA', b'\x02', b'\x42']
-        while True:
-            try:
-                xbee.transmit(
-                    xbee.ADDR_BROADCAST,
-                    byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints),
-                    cluster = 32773
-                )
-                log(2, 'Sent 8005: %s' % (byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)))
-            except OSError as e:
-                log(1, 'Failed to send 8005: %s' % (byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)))
-                hwSleep(1000)
-                continue
-            else:
-                break
+        txData(
+            clusterint = 32773,
+            payload = byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
+        )
+
     elif intClusterID == 4: # 0x0004 Simple Descriptor Request
         log(2, 'Simple Descriptor Request from %s' % (formatHex(data['sender_eui64'])))
     elif intClusterID == 146: # 0x0092 I/O Sample Indicator
