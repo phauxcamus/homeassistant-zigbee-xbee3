@@ -117,6 +117,10 @@ while True:
         # Some setup
         byteFrameID = dictData['payload'][:1]
 
+        '''# Filter out our own packets
+        if dictData['sender_nwk'] == int.from_bytes(strNA16, 'little'):
+            continue'''
+
         # Use the Cluster ID to figure out what to do with this data
         intClusterID = dictData['cluster']
         if intClusterID == 5: # 0x0005 Active Endpoints Request
