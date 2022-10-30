@@ -99,48 +99,75 @@ while intAIStatus > 0:
     hwSleep(1000)
 
 # Now that we're connected, get our 16-bit Network Address
-strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
-log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
+try:
+    if strNA16 is not None:
+        log(3, 'strNA16 already set')
+except NameError:
+    strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
+    log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
 
-# Main Loop
-while True:
-    # Do a Device Announce so everyone knows we're here
-    # TODO: Is this nessesary if JN is enabled?
-    '''xbee.transmit(
+# Do a Device Announce so everyone knows we're here
+# TODO: Is this nessesary if JN is enabled?
+'''try:
+    xbee.transmit(
         xbee.ADDR_BROADCAST,
         b'\xAA' + strNA16 + strNA64 + b'\x04',
         cluster = 19
-    )'''
+    )
+except:
+    log(0, xbee.atcmd('AI'))'''
 
-    dictData = xbee.receive()
-    if dictData is not None: # Let's see if there's any data to act upon
-        # Some setup
-        byteFrameID = dictData['payload'][:1]
+# Main RX Callback Function
+def funcRX(data: dict):
+    ''' Example Data:
+        {
+            'cluster': 17,
+            'dest_ep': 232,
+            'broadcast': False,
+            'source_ep': 232,
+            'payload': b'Sample payload',
+            'profile': 49413,
+            'sender_nwk': 63941,
+            'sender_eui64': b'\x00\x13\xa2\x00\x92w%`'
+        }
+    '''
 
-        '''# Filter out our own packets
-        if dictData['sender_nwk'] == int.from_bytes(strNA16, 'little'):
-            continue'''
+    # Some setup
+    byteFrameID = data['payload'][:1]
 
-        # Use the Cluster ID to figure out what to do with this data
-        intClusterID = dictData['cluster']
-        if intClusterID == 5: # 0x0005 Active Endpoints Request
-            log(2, 'Active Endpoint Request from %s' % (formatHex(dictData['sender_eui64'])))
-            listEndpoints = [b'\xAA', b'\x02', b'\x42']
-            xbee.transmit(
-                xbee.ADDR_BROADCAST,
-                byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints),
-                cluster = b'\x80\x05'
-            )
-        elif intClusterID == 4: # 0x0004 Simple Descriptor Request
-            log(2, 'Simple Descriptor Request from %s' % (formatHex(dictData['sender_eui64'])))
-        elif intClusterID == 146: # 0x0092 I/O Sample Indicator
-            continue # TODO: Report to HA or something?
-        elif intClusterID == 32768: # 0x8000 Network Address Response
-            log(3, 'Network Address Response from %s: %s' % (formatHex(dictData['sender_eui64']), formatHex(dictData['payload'])))
-        elif intClusterID == 32769: # 0x8001 IEEE Address Response
-            log(3, 'IEEE Address Response from %s: %s' % (formatHex(dictData['sender_eui64']), formatHex(dictData['payload'])))
-        else: # Unknown Cluster ID
-            log(1, 'Unknown Packet: %s' % (dictData))
-    else: # Sleep for a second then start over
-        log(3, 'No packets')
-        hwSleep(1000)
+    '''# Filter out our own packets
+    if data['sender_nwk'] == int.from_bytes(strNA16, 'little'):
+        return'''
+
+    # Use the Cluster ID to figure out what to do with this data
+    intClusterID = data['cluster']
+    if intClusterID == 5: # 0x0005 Active Endpoints Request
+        log(2, 'Active Endpoint Request from %s' % (formatHex(data['sender_eui64'])))
+        listEndpoints = [b'\xAA', b'\x02', b'\x42']
+        while True:
+            try:
+                xbee.transmit(
+                    xbee.ADDR_BROADCAST,
+                    byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints),
+                    cluster = 32773
+                )
+                log(2, 'Sent 8005: %s' % (byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)))
+            except OSError as e:
+                log(1, 'Failed to send 8005: %s' % (byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)))
+                hwSleep(1000)
+                continue
+            else:
+                break
+    elif intClusterID == 4: # 0x0004 Simple Descriptor Request
+        log(2, 'Simple Descriptor Request from %s' % (formatHex(data['sender_eui64'])))
+    elif intClusterID == 146: # 0x0092 I/O Sample Indicator
+        return # TODO: Report to HA or something?
+    elif intClusterID == 32768: # 0x8000 Network Address Response
+        log(3, 'Network Address Response from %s: %s' % (formatHex(data['sender_eui64']), formatHex(data['payload'])))
+    elif intClusterID == 32769: # 0x8001 IEEE Address Response
+        log(3, 'IEEE Address Response from %s: %s' % (formatHex(data['sender_eui64']), formatHex(data['payload'])))
+    else: # Unknown Cluster ID
+        log(1, 'Unknown Packet: %s' % (data))
+
+# Set up our callback function
+xbee.receive_callback(funcRX)
