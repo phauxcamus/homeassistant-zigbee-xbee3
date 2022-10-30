@@ -133,7 +133,12 @@ while True:
             )
         elif intClusterID == 4: # 0x0004 Simple Descriptor Request
             log(2, 'Simple Descriptor Request from %s' % (formatHex(dictData['sender_eui64'])))
-            
+        elif intClusterID == 146: # 0x0092 I/O Sample Indicator
+            continue # TODO: Report to HA or something?
+        elif intClusterID == 32768: # 0x8000 Network Address Response
+            log(3, 'Network Address Response from %s: %s' % (formatHex(dictData['sender_eui64']), formatHex(dictData['payload'])))
+        elif intClusterID == 32769: # 0x8001 IEEE Address Response
+            log(3, 'IEEE Address Response from %s: %s' % (formatHex(dictData['sender_eui64']), formatHex(dictData['payload'])))
         else: # Unknown Cluster ID
             log(1, 'Unknown Packet: %s' % (dictData))
     else: # Sleep for a second then start over
