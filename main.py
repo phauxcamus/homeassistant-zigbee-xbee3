@@ -190,6 +190,22 @@ def funcRX(data: dict):
             [0xf833] Initializing endpoints [<Endpoint id=0 in=[] out=[] status=<Status.NEW: 0>>]
             [0xf833:0] Discovering endpoint information
         '''
+        '''
+            OD: The frame ID
+            00: Status OK
+            D2 EF: yup.. our address
+            0E: The number of bytes sent after this one.
+            08: The endpoint
+            04 01:  01 04 says our endpoint is Home Automation capable.
+            02 00: Says our device is an on/off output (keeping it simple)
+            30: don't worry.. version numbers.
+            03: The number of cluster types we can accept in.
+            00 00: First Cluster type - Basic
+            03 00: Second one is ID clusters
+            06 00: Last one is on/off clusters
+            00: The number of cluster types we send out.
+        '''
+
     elif intClusterID == 146: # 0x0092 I/O Sample Indicator
         log(3, 'I/O Sample Indicator: %s' % (formatHex(data['payload'])))
     elif intClusterID == 32768: # 0x8000 Network Address Response
