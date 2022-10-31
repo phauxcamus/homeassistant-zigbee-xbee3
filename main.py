@@ -165,36 +165,46 @@ def funcRX(data: dict):
     # Use the Cluster ID to figure out what to do with this data
     intClusterID = data['cluster']
     if intClusterID == 5: # 0x0005 Active Endpoints Request
-        log(2, 'Active Endpoint Request from %s, Frame ID %s' % (formatHex(data['sender_eui64']), data))
-        listEndpoints = [b'\xAA', b'\x02', b'\x42']
+        log(2, 'Active Endpoint Request from %s, Frame ID %s' % (formatHex(data['sender_eui64']), formatHex(byteFrameID)))
+        listEndpoints = [b'\xAA']
         txData(
             addr = data['sender_eui64'],
+            profileint = 0,
             clusterint = 32773,
+            s_ep=data['source_ep'],
+            d_ep=data['dest_ep'],
             payload = byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
         )
     elif intClusterID == 4: # 0x0004 Simple Descriptor Request
-        log(2, 'Simple Descriptor Request from %s: %s' % (formatHex(data['sender_eui64']), data))
-        ''' From HA:
-            [0xf833] Already have endpoints: {0: <Endpoint id=0 in=[] out=[] status=<Status.NEW: 0>>}
-            [0xf833] Initializing endpoints [<Endpoint id=0 in=[] out=[] status=<Status.NEW: 0>>]
-            [0xf833:0] Discovering endpoint information
-        '''
-        '''
-            OD: The frame ID
-            00: Status OK
-            D2 EF: yup.. our address
-            0E: The number of bytes sent after this one.
-            08: The endpoint
-            04 01:  01 04 says our endpoint is Home Automation capable.
-            02 00: Says our device is an on/off output (keeping it simple)
-            30: don't worry.. version numbers.
-            03: The number of cluster types we can accept in.
-            00 00: First Cluster type - Basic
-            03 00: Second one is ID clusters
-            06 00: Last one is on/off clusters
-            00: The number of cluster types we send out.
-        '''
+        byteEndpoint = data['payload'][3:4]
+        log(2, 'Simple Descriptor Request from %s: Frame ID %s, Endpoint %s, Data %s' % (formatHex(data['sender_eui64']), formatHex(byteFrameID), formatHex(byteEndpoint), data['payload']))
 
+        listClustersRX = [b'\x00\x00', b'\x03\x00', b'\x06\x00'] # Basic, Identify, On/Off
+        listClustersTX = [b'\x02\x00', b'\x06\x04'] # Device Temp, Occupancy Sensor
+        byteResponse = (
+            byteEndpoint +
+            b'\x04\x01' +
+            b'\x07\x01' + # device id type
+            b'\x30' +
+            len(listClustersRX).to_bytes(1, 'little') +
+            b''.join(listClustersRX) +
+            len(listClustersTX).to_bytes(1, 'little') +
+            b''.join(listClustersTX)
+        )
+        txData(
+            addr = data['sender_eui64'],
+            profileint = 0,
+            clusterint = 32772,
+            s_ep=data['source_ep'],
+            d_ep=data['dest_ep'],
+            payload = (
+                byteFrameID +
+                b'\x00' +
+                strNA16 +
+                len(byteResponse).to_bytes(1, 'little') +
+                byteResponse
+            )
+        )
     elif intClusterID == 146: # 0x0092 I/O Sample Indicator
         log(3, 'I/O Sample Indicator: %s' % (formatHex(data['payload'])))
     elif intClusterID == 32768: # 0x8000 Network Address Response
