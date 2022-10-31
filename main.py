@@ -113,17 +113,20 @@ def txData(profileint: int, clusterint: int, s_ep: int, d_ep: int, payload: byte
 strNA64 = struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little'))
 log(2, 'Our 64-bit Network Address is: %s' % (hex(int.from_bytes(struct.pack('>i', int.from_bytes(xbee.atcmd('SL'), 'little')) + struct.pack('>i', int.from_bytes(xbee.atcmd('SH'), 'little')), 'big'))[2:].upper()))
 
-# Hang out until we're connected, then 
-intAIStatus = xbee.atcmd('AI')
-while intAIStatus > 0:
-    if intAIStatus == 33:
-        log(1, 'Network scan complete but no PANs were found')
+# Hang out until we're connected
+while True:
+    intAIStatus = xbee.atcmd('AI')
+    if intAIStatus == 0:
+        log(2, 'Joined the PAN')
+        break
+    elif intAIStatus == 33:
+        log(0, 'Network scan complete but no PANs were found')
     elif intAIStatus == 34:
-        log(1, 'Network scan complete but our PAN ID wasn\'t found (check SC and ID settings)')
+        log(0, 'Network scan complete but our PAN ID wasn\'t found (check SC and ID settings)')
     elif intAIStatus == 35:
         log(1, 'PAN was found but is not in join mode')
     elif intAIStatus == 36:
-        log(1, 'No joinable PANs were found')
+        log(0, 'No joinable PANs were found')
     elif intAIStatus == 255:
         log(2, 'Network is intializing')
     else:
