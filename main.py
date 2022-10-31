@@ -181,7 +181,7 @@ def funcRX(data: dict):
         txData(
             addr = data['sender_eui64'],
             clusterint = 32773,
-            payload = byteFrameID + b'\x00' + strNA16 + b'\x01\x00\xdd' # + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
+            payload = byteFrameID + b'\x00' + strNA16 + len(listEndpoints).to_bytes(1, 'big') + b''.join(listEndpoints)
         )
     elif intClusterID == 4: # 0x0004 Simple Descriptor Request
         log(2, 'Simple Descriptor Request from %s: %s' % (formatHex(data['sender_eui64']), data))
