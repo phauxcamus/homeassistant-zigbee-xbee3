@@ -142,31 +142,16 @@ except NameError:
     log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
 
 # Do a Device Announce so everyone knows we're here
-# TODO: Is this nessesary if JN is enabled?
-'''try:
-    xbee.transmit(
-        xbee.ADDR_BROADCAST,
-        b'\xAA' + strNA16 + strNA64 + b'\x04',
-        cluster = 19
-    )
-except:
-    log(0, xbee.atcmd('AI'))'''
+'''txData(
+    profileint = 0,
+    clusterint = 19,
+    s_ep=0,
+    d_ep=0,
+    payload = b'\xAA' + strNA16 + strNA64 + b'\x04'
+)'''
 
 # Main RX Callback Function
 def funcRX(data: dict):
-    ''' Example Data:
-        {
-            'cluster': 17,
-            'dest_ep': 232,
-            'broadcast': False,
-            'source_ep': 232,
-            'payload': b'Sample payload',
-            'profile': 49413,
-            'sender_nwk': 63941,
-            'sender_eui64': b'\x00\x13\xa2\x00\x92w%`'
-        }
-    '''
-
     # Some setup
     byteFrameID = data['payload'][:1]
 
