@@ -3,6 +3,10 @@ Digi Xbee3 ZigBee Documentation:  https://www.digi.com/resources/documentation/d
 
 Archive.org of someone getting an XBee connected with SmartThings: https://web.archive.org/web/20180218010916/https://www.falco.co.nz/electronic-projects/xbee-to-smartthings/
 
+Profiles and Device ID Types:  https://www.rfwireless-world.com/Terminology/Zigbee-Profile-ID-list.html
+
+Some Clusters:  https://www.rfwireless-world.com/Terminology/Zigbee-Cluster-ID-list.html
+
 # Packets we need to construct
 These are the packets we need to build in order to communicate with the Coordinator.  The list is incomplete but growing!
 
