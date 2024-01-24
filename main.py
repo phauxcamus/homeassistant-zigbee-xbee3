@@ -78,7 +78,7 @@ def formatHex(data: bytes or int):
         return(hex(data)[2:].upper())
 
 def txData(profileint: int, clusterint: int, s_ep: int, d_ep: int, payload: bytes, addr = xbee.ADDR_BROADCAST):
-    '''Wrapper for xbee.transmit()
+    '''Wrapper for `xbee.transmit()`
 
     `profileint`: Profile ID
     `clusterint`: Cluster ID
