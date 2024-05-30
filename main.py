@@ -127,10 +127,12 @@ while True:
         log(1, 'PAN was found but is not in join mode')
     elif intAIStatus == 36:
         log(0, 'No joinable PANs were found')
+    elif intAIStatus == 175:
+        log(0, 'Secure Join - Key required to join network')
     elif intAIStatus == 255:
         log(2, 'Network is intializing')
     else:
-        log(0, 'Network is in an unknown state (%s), see ZigBee User Guide page 220' % (hex(intAIStatus)))
+        log(0, 'Network is in an unknown state (%s), see ZigBee User Guide page 236' % (hex(intAIStatus)))
     hwSleep(1000)
 
 # Now that we're connected, get our 16-bit Network Address
