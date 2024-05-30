@@ -141,7 +141,7 @@ try:
         log(3, 'strNA16 already set')
 except NameError:
     strNA16 = struct.pack('<i', xbee.atcmd('MY'), 'little')[:2]
-    log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:]))
+    log(2, 'Our 16-bit Network Address is: %s' % (hex(xbee.atcmd('MY'))[2:].upper()))
 
 # Do a Device Announce so everyone knows we're here
 '''txData(
